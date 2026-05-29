@@ -3929,3 +3929,444 @@ img { max-width: 100%; display: block; }
     margin: 0 auto !important;
   }
 }
+
+/* ============================================================
+   AI能力三角 · 三角可视化
+   ============================================================ */
+.triangle-visual {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 56px;
+}
+.triangle-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 500 / 440;
+}
+.triangle-svg {
+  width: 100%;
+  height: 100%;
+}
+.tri-node {
+  position: absolute;
+  text-align: center;
+  cursor: default;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 16px 20px;
+  background: rgba(10, 10, 31, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
+  border-radius: 16px;
+  min-width: 110px;
+}
+.tri-node:hover {
+  transform: scale(1.08);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.15);
+}
+.tri-node-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.06), transparent);
+  z-index: -1;
+}
+.tri-node-top {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -30%);
+}
+.tri-node-top:hover {
+  transform: translate(-50%, -30%) scale(1.08);
+}
+.tri-node-left {
+  bottom: 0;
+  left: 0;
+  transform: translate(-20%, 10%);
+}
+.tri-node-left:hover {
+  transform: translate(-20%, 10%) scale(1.08);
+}
+.tri-node-right {
+  bottom: 0;
+  right: 0;
+  transform: translate(20%, 10%);
+}
+.tri-node-right:hover {
+  transform: translate(20%, 10%) scale(1.08);
+}
+.tri-node-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 0 16px rgba(var(--accent-rgb), 0.4));
+}
+.tri-node-label {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+.tri-node-sub {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* 三角详解卡片 */
+.tri-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+.tri-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 32px 24px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tri-card:hover {
+  border-color: rgba(var(--accent-rgb), 0.2);
+  background: rgba(var(--accent-rgb), 0.03);
+  transform: translateY(-4px);
+}
+.tri-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.tri-card-emoji {
+  font-size: 28px;
+}
+.tri-card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+.tri-card-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.tri-card-example {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tri-card-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.08);
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   三维度进化路线 · Tab切换面板
+   ============================================================ */
+.dim-panel {
+  max-width: 960px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg-card);
+}
+.dim-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.01);
+}
+.dim-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--text-muted);
+  position: relative;
+}
+.dim-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.dim-tab:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.dim-tab:hover {
+  background: rgba(var(--accent-rgb), 0.03);
+  color: var(--text-secondary);
+}
+.dim-tab.active {
+  background: rgba(var(--accent-rgb), 0.05);
+  color: var(--accent);
+}
+.dim-tab.active::after {
+  opacity: 1;
+}
+.dim-tab-emoji {
+  font-size: 24px;
+}
+.dim-tab-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+}
+.dim-tab-sub {
+  font-size: 11px;
+  opacity: 0.6;
+}
+.dim-content {
+  position: relative;
+}
+.dim-detail {
+  display: none;
+  padding: 0;
+}
+.dim-detail.active {
+  display: block;
+}
+.dim-table-wrap {
+  overflow-x: auto;
+}
+.dim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.dim-table thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.dim-table tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.dim-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.dim-row-highlight {
+  background: rgba(var(--accent-rgb), 0.03);
+}
+.dim-row-highlight td {
+  color: var(--text-primary) !important;
+}
+.dim-level {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.dim-l1 { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+.dim-l2 { background: rgba(255,255,255,0.08); color: var(--text-secondary); }
+.dim-l3 { background: rgba(var(--accent-rgb),0.08); color: rgba(var(--accent-rgb),0.7); }
+.dim-l4 { background: rgba(var(--accent-rgb),0.12); color: var(--accent); }
+.dim-l5 { background: rgba(var(--accent-rgb),0.18); color: var(--accent); font-weight: 800; }
+.dim-l6 { background: var(--accent); color: var(--bg-base); font-weight: 800; }
+.dim-insight {
+  padding: 20px 24px;
+  background: rgba(var(--accent-rgb), 0.03);
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ============================================================
+   飞轮循环图
+   ============================================================ */
+.flywheel-cycle {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+.flywheel-ring {
+  position: relative;
+  width: 420px;
+  height: 420px;
+}
+.flywheel-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.fw-arc {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fw-arc:hover {
+  fill: rgba(0,255,136,0.18);
+  filter: drop-shadow(0 0 8px rgba(0,255,136,0.15));
+}
+.flywheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--accent-rgb), 0.06);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  border-radius: 50%;
+  animation: gentle-pulse 3s ease-in-out infinite;
+}
+@keyframes gentle-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.15); }
+  50% { box-shadow: 0 0 0 16px rgba(var(--accent-rgb), 0); }
+}
+.flywheel-center-icon {
+  font-size: 28px;
+  animation: spin-slow 8s linear infinite;
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.flywheel-center-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.3;
+}
+.flywheel-step {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 110px;
+  text-align: center;
+  transform-origin: center;
+  /* Position steps in a circle */
+  transform: 
+    translate(-50%, -50%) 
+    rotate(var(--step-angle)) 
+    translate(0, -170px)
+    rotate(calc(-1 * var(--step-angle)));
+  transition: transform 0.3s;
+}
+.flywheel-step-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+  opacity: 0.5;
+  margin-bottom: 4px;
+}
+.flywheel-step-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.flywheel-step-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   新增Section响应式
+   ============================================================ */
+@media (max-width: 768px) {
+  .tri-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .triangle-wrapper {
+    max-width: 300px;
+  }
+  .tri-node-icon { font-size: 24px; }
+  .tri-node-label { font-size: 14px; }
+  .tri-node-sub { font-size: 10px; }
+  
+  .dim-tabs {
+    flex-direction: column;
+  }
+  .dim-tab:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .dim-tab {
+    flex-direction: row;
+    gap: 12px;
+    padding: 14px 20px;
+  }
+  .dim-table { font-size: 12px; }
+  .dim-table thead th,
+  .dim-table tbody td { padding: 10px 12px; }
+  
+  .flywheel-ring {
+    width: 320px;
+    height: 320px;
+  }
+  .flywheel-step {
+    width: 90px;
+    transform: 
+      translate(-50%, -50%) 
+      rotate(var(--step-angle)) 
+      translate(0, -130px)
+      rotate(calc(-1 * var(--step-angle)));
+  }
+  .flywheel-step-title { font-size: 13px; }
+  .flywheel-center { width: 90px; height: 90px; }
+  .flywheel-center-icon { font-size: 22px; }
+  .flywheel-center-text { font-size: 12px; }
+  
+  #three-shifts .container > div[style*="grid-template-columns"],
+  #auto-evolve .container > div[style*="grid-template-columns"],
+  #why-no-skip div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    max-width: 480px !important;
+    margin: 0 auto !important;
+  }
+  
+  #multiplication div[style*="display:flex"][style*="gap:32px"] {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}

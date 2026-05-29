@@ -266,6 +266,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ---- 8b. 维度Tab切换（三维度进化路线） ----
+  const dimTabs = document.querySelectorAll('.dim-tab');
+  const dimDetails = document.querySelectorAll('.dim-detail');
+
+  dimTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const index = tab.dataset.dim;
+      dimTabs.forEach(t => t.classList.remove('active'));
+      dimDetails.forEach(d => d.classList.remove('active'));
+      tab.classList.add('active');
+      const targetDetail = document.querySelector(`.dim-detail[data-dim-detail="${index}"]`);
+      if (targetDetail) targetDetail.classList.add('active');
+    });
+  });
+
   // ---- 9. 痛点卡片鼠标跟随发光 ----
   document.querySelectorAll('.pain-card').forEach(card => {
     const glow = card.querySelector('.pain-card-glow');
